@@ -1,6 +1,0 @@
-Dynamic Memory Size: 49152 bytes
-Block size: 256
-Grid size: 32
-  GPU time: 0.214016 milliseconds
-last value: 795.500000 
-second to last value: 779.500000 
