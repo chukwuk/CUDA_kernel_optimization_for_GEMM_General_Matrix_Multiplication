@@ -148,7 +148,6 @@ WarpSpec_GEMM_Kernel_20(data_type* d_A, data_type* d_B,  data_type* d_C, datasiz
    for (int m = 0; m < B_BATCHSIZE; m++) {
         #pragma unroll
         for (int j = 0; j < TY; j++) {
-           //Reg_B[j] = AB_smem[COMPUTE_OFFSET +  A_SMEM_SIZE + threadIDY * B_BATCHSIZE + m + (B_SMEM_BATCHSIZE * j)]; 
             Reg_B[j] = AB_smem[COMPUTE_OFFSET + A_SMEM_SIZE + j * B_BATCHSIZE + m + ( threadIDY * B_BATCHSIZE * TY )];
        	}
           
