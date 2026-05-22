@@ -186,7 +186,7 @@ main( int argc, char* argv[ ] )
 
     
   // Get a pointer to the explicit instantiation
-  void* kernel_ptr = (void*)naive2D_GEMM_Kernel_2<data_type, datasize_type, BLOCKSIZEX, BLOCKSIZEY, FAKE_BLOCKSIZEY>;
+  void* kernel_ptr = (void*)WarpSpec_GEMM_Kernel_20<data_type, datasize_type, BLOCKSIZEX, BLOCKSIZEY, FAKE_BLOCKSIZEY>;
   
   int dynSmemSize = (A_SMEM_SIZE + B_SMEM_SIZE) * 4 * 2;
   
@@ -206,7 +206,7 @@ main( int argc, char* argv[ ] )
   cudaEventRecord(start, 0); 
 
   // call the kernel
-  naive2D_GEMM_Kernel_2<data_type, datasize_type, BLOCKSIZEX, BLOCKSIZEY, FAKE_BLOCKSIZEY><<< grid, threads, dynSmemSize>>>( d_A, d_B, d_C, Arows, Bcols, AcolsBrows, alpha, beta);
+  WarpSpec_GEMM_Kernel_20<data_type, datasize_type, BLOCKSIZEX, BLOCKSIZEY, FAKE_BLOCKSIZEY><<< grid, threads, dynSmemSize>>>( d_A, d_B, d_C, Arows, Bcols, AcolsBrows, alpha, beta);
   
   status = cudaDeviceSynchronize( );
   

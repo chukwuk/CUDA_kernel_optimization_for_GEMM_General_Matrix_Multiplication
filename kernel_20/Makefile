@@ -1,4 +1,4 @@
-CC=nvcc --maxrregcount=210 -ftz=true -use_fast_math 
+CC=nvcc --maxrregcount=210  
 
 all: main
 

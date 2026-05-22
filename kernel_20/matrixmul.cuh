@@ -9,7 +9,7 @@ using namespace std;
 template <typename data_type, typename datasize_type, const int blocksizex, const int blocksizey, const int fake_blocksizey>
 __global__  void 
 __launch_bounds__(256, 1)
-naive2D_GEMM_Kernel_2(data_type* d_A, data_type* d_B,  data_type* d_C, datasize_type Arows, datasize_type Bcols, datasize_type AcolsBrows, data_type alpha, data_type beta) {
+WarpSpec_GEMM_Kernel_20(data_type* d_A, data_type* d_B,  data_type* d_C, datasize_type Arows, datasize_type Bcols, datasize_type AcolsBrows, data_type alpha, data_type beta) {
   extern __shared__ float AB_smem[];
   
   int threadIDX = threadIdx.x % blocksizex;
@@ -19,7 +19,6 @@ naive2D_GEMM_Kernel_2(data_type* d_A, data_type* d_B,  data_type* d_C, datasize_
   int trip_number = threadIDX / 8;
   
   int thread_fake_id_2 = (threadIDX % 8) * 2; 
-  int j_fake = threadIDX >= 16 ? 1 : 0;
   bool prod_consum = threadIdx.x < 128 ? true : false;
   
     
@@ -60,7 +59,6 @@ naive2D_GEMM_Kernel_2(data_type* d_A, data_type* d_B,  data_type* d_C, datasize_
       }
 
       
-    //__syncwarp();
       
       #pragma unroll 
       for (int j = 0; j < TY; j+=4) {
