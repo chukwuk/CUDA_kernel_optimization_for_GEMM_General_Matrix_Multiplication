@@ -58,12 +58,15 @@ WarpSpec_GEMM_Kernel_20(data_type* d_A, data_type* d_B,  data_type* d_C, datasiz
          __pipeline_memcpy_async( &(reinterpret_cast<float2 *> (&AB_smem[A_SMEM_SIZE + thread_fake_id_2 + ((threadIDY2 + 4) * B_BATCHSIZE * TY) + ((j + trip_number) * B_BATCHSIZE)])[0]),  &(reinterpret_cast<float2 *>   ( &d_B[gidy * AcolsBrows + thread_fake_id_2])[0]), sizeof(float2));
 
       } 
-      
+          
 
   } 
 
   for (int k = B_BATCHSIZE; k < AcolsBrows; k+=B_BATCHSIZE)  {          
              	  
+     
+      __pipeline_commit();
+      __pipeline_wait_prior(0);
       __syncthreads();
       
       if (!prod_consum) { 
@@ -118,7 +121,11 @@ WarpSpec_GEMM_Kernel_20(data_type* d_A, data_type* d_B,  data_type* d_C, datasiz
     COMPUTE_OFFSET = (COMPUTE_OFFSET != 0) ? 0 : AB_SMEM_SIZE;    
   }
   
- __syncthreads();
+  
+   
+  __pipeline_commit();
+  __pipeline_wait_prior(0);
+  __syncthreads();
   
    #pragma unroll 
    for (int m = 0; m < B_BATCHSIZE; m++) {
@@ -162,7 +169,10 @@ WarpSpec_GEMM_Kernel_20(data_type* d_A, data_type* d_B,  data_type* d_C, datasiz
        __pipeline_memcpy_async( &(reinterpret_cast<float4 *>(&AB_smem[thread_fake_id  + COPY_OFFSET + threadIDY*256 + (trip_number + 4) * 32 ])[0])
    ,  &(reinterpret_cast<float4 *>(&d_C[Arows * gidy + thread_fake_id + (i * blocksizex) +  (blockIdx.x * blocksizex * TX) ])[0]) , sizeof(float4)); 
  
-	  __syncwarp();
+	  
+        __pipeline_commit();
+        __pipeline_wait_prior(0);
+        __syncwarp();
          
          #pragma unroll
 	 for (int k = 0; k < 8; k++) {
